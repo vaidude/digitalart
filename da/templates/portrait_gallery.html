@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portrait Gallery</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        function filterPortraits() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let portraits = document.getElementsByClassName('portrait-card');
+            
+            for (let portrait of portraits) {
+                let text = portrait.innerText.toLowerCase();
+                portrait.style.display = text.includes(input) ? "block" : "none";
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">Portrait Gallery</h1>
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="Search portraits" 
+                   class="w-full p-4 rounded-full shadow-md focus:outline-none" onkeyup="filterPortraits()">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            
+            {% for portrait in portrait %}
+            {% if not portrait.is_sold %}
+                <div class="portrait-card bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="{{ portrait.image.url }}" alt="{{ portrait.title }}" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800">{{ portrait.title }}</h3>
+                        <p class="text-gray-600 mt-2">{{ portrait.description|slice:":100" }}...</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-4">₹{{ portrait.price }}</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-4">Artist: {{ portrait.artist.username }}</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-4">Contact: {{ portrait.artist.email }}
+                            <br>
+                            
+                            <a href="/chat/" class="bg-blue-300 rounded-full px-4 py-1 inline-flex items-center">
+                                Chat <i class="fa-solid fa-comment-dots ml-2"></i>
+                            </a>
+                        </p>
+                        
+                        <p class="text-lg font-semibold text-gray-900 mt-4">Rating: 
+                            {% if portrait.average_rating %}
+                                {{ portrait.average_rating|floatformat:1 }}
+                            {% else %}
+                                No reviews
+                            {% endif %}
+                        </p>
+
+                       
+                        <form action="{% url 'report_portrait' portrait.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Report this portrait?');" style="background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-flag" style="color: red; font-size: 20px;"></i>Report
+                            </button>
+                        </form>
+                        
+                        {% if not is_artist %} 
+                        <form method="POST" action="{% url 'purchase' portrait.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="mt-4 w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-cart-plus mr-2"></i> Buy Now
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'codpayment' portrait.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="mt-4 w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-cart-plus mr-2"></i> Pay Later
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        <a href="{% url 'submit_feedback' portrait.id %}" class="mt-4 w-full inline-block text-center py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <i class="fas fa-comment-dots mr-2"></i> Give Feedback
+                        </a>
+                        
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h1>Payment for {{ portrait.title }}</h1>
+    <p><strong>Price:</strong> ₹{{ portrait.price }}</p>
+
+    <form method="POST" action="{% url 'paymentsuccess' %}">
+        {% csrf_token %}
+        <input type="hidden" name="order_id" value="{{ razorpay_order_id }}">
+        <input type="hidden" name="portrait_id" value="{{ portrait.id }}">
+    
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            var options = {
+                key: "{{ razorpay_merchant_key }}",  // Your Razorpay API Key
+                amount: "{{ razorpay_amount }}",  // Amount in paise
+                currency: "{{ currency }}",  // INR
+                name: "{{ portrait.title }}",
+                description: "Payment for artwork",
+                image: "https://example.com/your_logo.png",  // Replace with your actual logo
+                order_id: "{{ razorpay_order_id }}",
+                handler: function(response) {
+                    var form = document.createElement('form');
+                    form.method = 'GET';  // Use GET for Razorpay callback
+                    form.action = "{% url 'paymentsuccess' %}";  // Ensure this URL matches your payment success view
+    
+                    // Add the Razorpay response details as hidden inputs
+                    form.innerHTML = `
+                        <input type="hidden" name="payment_id" value="${response.razorpay_payment_id}">
+                        <input type="hidden" name="order_id" value="${response.razorpay_order_id}">
+                        <input type="hidden" name="portrait_id" value="{{ portrait.id }}">
+                    `;
+    
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                prefill: {
+                    name: "{{ buyer.name }}",
+                    email: "{{ buyer.email }}",
+                },
+                theme: {
+                    color: "#F37254"
+                }
+            };
+    
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        </script>
+    </form>
+    
+</body>
+</html>

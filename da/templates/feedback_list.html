@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-2xl font-bold">Feedback Dashboard</a>
+            <a href="{% url 'logout' %}" class="text-white px-4 py-2 bg-red-500 rounded-lg hover:bg-red-700 transition">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Feedback List Section -->
+    <div class="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+        <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">Feedback List</h2>
+
+        {% if feed %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                <thead>
+                    <tr class="bg-gray-800 text-white">
+                        <th class="px-6 py-3 text-left">Email</th>
+                        <th class="px-6 py-3 text-left">Feedback</th>
+                        <th class="px-6 py-3 text-left">Rating</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-gray-100">
+                    {% for feedback in feed %}
+                    <tr class="border-t border-gray-300 hover:bg-gray-200 transition">
+                        <td class="px-6 py-3 font-semibold">{{ feedback.email }}</td>
+                        <td class="px-6 py-3">{{ feedback.feedback_text }}</td>
+                        <td class="px-6 py-3">{{ feedback.rating }} <i class="fas fa-star text-yellow-500"></i></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-gray-500 text-lg mt-4">No feedback available.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

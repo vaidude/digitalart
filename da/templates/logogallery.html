@@ -1,0 +1,145 @@
+
+                                        <!DOCTYPE html>
+                                        <html lang="en">
+                                        
+                                        <head>
+                                            <meta charset="UTF-8">
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                            <title>Base64 Image Display</title>
+                                            <!-- Link to Tailwind CSS CDN -->
+                                            <script src="https://cdn.tailwindcss.com"></script>
+                                        </head>
+                                        
+                                        <body class="bg-gray-100 text-gray-800 font-sans">
+                                            
+                                            <!-- Navbar -->
+                                            <nav class="bg-gray-800 text-white p-4 shadow-md">
+                                                <div class="max-w-6xl mx-auto flex justify-between items-center">
+                                                    <a href="{% url 'home' %}" class="text-lg font-semibold hover:text-gray-300">Home</a>
+                                                    <a href="javascript:history.back()" class="text-lg font-semibold hover:text-gray-300">Back</a>
+                                                </div>
+                                            </nav>
+                                            
+                                            <!-- Main container for centering content -->
+                                            <div class="max-w-4xl mx-auto px-4 py-8">
+                                        
+                                                <!-- Heading -->
+                                                <h1 class="text-3xl font-semibold text-center mb-6">Displaying Image</h1>
+                                        
+                                                <!-- Image display section -->
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                                    {% for log in logos %}
+                                                    <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200">
+                                                        <!-- Image with responsive and rounded corners -->
+                                                        {% if log.logo_image %}
+                                                            <img src="{{ log.logo_image.url }}" alt="Logo Image" class="w-full h-auto rounded-lg object-contain">
+                                                        {% elif log.logo_data %}
+                                                            <div id="canvasContainer_{{ log.id }}" class="w-full h-48 bg-gray-200 rounded-lg">
+                                                                <script>
+                                                                    var canvas = new fabric.Canvas('canvas_{{ log.id }}', { renderOnAddRemove: false });
+                                                                    var logoData = {{ log.logo_data|escapejs }};
+                                                                    canvas.loadFromJSON(logoData, canvas.renderAll.bind(canvas));
+                                                                    var canvasElement = document.createElement('canvas');
+                                                                    canvasElement.id = 'canvas_{{ log.id }}';
+                                                                    canvasElement.width = 200;
+                                                                    canvasElement.height = 150;
+                                                                    document.getElementById('canvasContainer_{{ log.id }}').appendChild(canvasElement);
+                                                                </script>
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="text-center mb-8">
+                                                            <a href="{% url 'edit_logo' log.id %}" class="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                                                Edit
+                                                            </a>
+                                                        </div>
+                                                        <div class="text-center mt-6">
+                                                            <a href="{% url 'preview_logo' log.id %}" class="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                                                View in 3D
+                                                            </a>
+                                                        </div>
+                                                        <div class="text-center mt-6">
+                                                            <form method="POST" action="{% url 'delete_logo' log.id %}" onsubmit="return confirm('Are you sure you want to delete this logo?');">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>  
+                                            </div>
+                                        
+                                        </body>
+                                        </html>
+                                        {% comment %}   <!DOCTYPE html>
+                                        <html lang="en">
+
+                                        <head>
+                                            <meta charset="UTF-8">
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                            <title>Base64 Image Display</title>
+                                            <!-- Link to Tailwind CSS CDN -->
+                                            <script src="https://cdn.tailwindcss.com"></script>
+                                        </head>
+
+                                        <body class="bg-gray-100 text-gray-800 font-sans">
+
+                                            <!-- Main container for centering content -->
+                                            <div class="max-w-4xl mx-auto px-4 py-8">
+
+                                                <!-- Heading -->
+                                                <h1 class="text-3xl font-semibold text-center mb-6">Displaying Image</h1>
+
+                                                <!-- Button to edit (link styled as a button) -->
+                                            
+
+                                                <!-- Image display section -->
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                                    {% for log in logos %}
+                                                    <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200">
+                                                        <!-- Image with responsive and rounded corners -->
+                                                        {% if log.logo_image %}
+                    <!-- Display image if available -->
+                    <img src="{{ log.logo_image.url }}" alt="Logo Image"
+                         class="w-full h-auto rounded-lg object-contain">
+                {% elif log.logo_data %}
+                    <!-- Display as canvas if logo_data (JSON) is available -->
+                    <div id="canvasContainer_{{ log.id }}" class="w-full h-48 bg-gray-200 rounded-lg">
+                        <script>
+                            var canvas = new fabric.Canvas('canvas_{{ log.id }}', { renderOnAddRemove: false });
+                            var logoData = {{ log.logo_data|escapejs }};
+                            canvas.loadFromJSON(logoData, canvas.renderAll.bind(canvas));
+                            var canvasElement = document.createElement('canvas');
+                            canvasElement.id = 'canvas_{{ log.id }}';
+                            canvasElement.width = 200;
+                            canvasElement.height = 150;
+                            document.getElementById('canvasContainer_{{ log.id }}').appendChild(canvasElement);
+                        </script>
+                    </div>
+                {% endif %}
+                                                            <div class="text-center mb-8">
+                                                                <a href="{% url 'edit_logo' log.id %}"
+                                                                    class="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                                                    Edit
+                                                                </a>
+                                                            </div>
+                                                            <div class="text-center mt-6">
+                                                                <a href="{% url 'preview_logo' log.id %}" class="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                                                    View in 3D
+                                                                </a>
+                                                            </div>
+                                                            <div class="text-center mt-6">
+                                                                <form method="POST" action="{% url 'delete_logo' log.id %}" onsubmit="return confirm('Are you sure you want to delete this logo?');">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>                                                                                                                                                                                                     
+
+                                            </div>
+
+                                        </body>
+
+                                        </html>{% endcomment %}
+                                        

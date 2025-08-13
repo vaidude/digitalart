@@ -1,0 +1,185 @@
+<!-- {% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+   
+    <nav class="bg-gray-800 p-4">
+        <div class="flex justify-between items-center">
+            <a href="" class="text-white text-xl font-semibold">Artist Dashboard</a>
+            <a href="{% url 'logout' %}" class="text-white">Logout</a>
+        </div>
+    </nav>
+
+   
+    <div class="container mx-auto my-8 p-4 bg-white shadow-lg rounded-lg">
+        <div class="flex items-center space-x-4">
+            <img src="{{ artist.image.url }}" alt="Artist Profile Picture" class="w-24 h-24 rounded-full border-2 border-gray-300">
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-700">{{ artist.username }}</h2>
+                <p class="text-gray-600">{{ artist.email }}</p>
+                <p class="text-gray-600">{{ artist.phonenumber }}</p>
+                <p class="text-gray-600">{{ artist.dob }}</p>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a href="javascript:void(0);" onclick="document.getElementById('edit-section').classList.toggle('hidden')" class="text-blue-500 hover:text-blue-700">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        </div>
+        
+        
+        <div id="edit-section" class="hidden mt-6">
+            <form method="POST" action="{% url 'edit_profile' artist.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-600">Username</label>
+                        <input type="text" id="name" name="name" value="{{ artist.username }}" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                        <input type="email" id="email" name="email" value="{{ artist.email }}" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-600">Gender</label>
+                        <select id="gender" name="gender" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                            <option value="Male" {% if artist.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if artist.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if artist.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="phonenumber" class="block text-sm font-medium text-gray-600">Phone Number</label>
+                        <input type="text" id="phonenumber" name="phonenumber" value="{{ artist.phonenumber }}" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="dob" class="block text-sm font-medium text-gray-600">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" value="{{ artist.dob }}" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-600">Profile Picture</label>
+                        <input type="file" id="image" name="image" class="mt-1 p-2 w-full border border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">Save Changes</button>
+                </div>
+            </form>
+            <li><a href="/home/">home</a></li>
+        </div>
+    </div>
+
+</body>
+</html> 
+{% load static %} -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-xl font-semibold">Artist Dashboard</a>
+            <a href="{% url 'logout' %}" class="text-white hover:underline">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+        <!-- Profile Header -->
+        <div class="flex items-center space-x-6">
+            <img src="{{ artist.image.url|default:'/static/images/default-profile.png' }}" alt="Profile Picture"
+                class="w-32 h-32 rounded-full border-4 border-gray-300 shadow-md">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-700">{{ artist.username }}</h2>
+                <p class="text-gray-600">Email: <span class="font-medium">{{ artist.email }}</span></p>
+                <p class="text-gray-600">Phone: <span class="font-medium">{{ artist.phonenumber }}</span></p>
+                <p class="text-gray-600">Date of Birth: <span class="font-medium">{{ artist.dob }}</span></p>
+                <p class="text-gray-600">Gender: <span class="font-medium">{{ artist.gender }}</span></p>
+                <button onclick="document.getElementById('edit-section').classList.toggle('hidden')"
+                    class="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Edit Profile Section -->
+        <div id="edit-section" class="hidden mt-8">
+            <form method="POST" action="{% url 'edit_profile' artist.id %}" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Username -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-600">Username</label>
+                        <input type="text" id="name" name="name" value="{{ artist.username }}"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                        <input type="email" id="email" name="email" value="{{ artist.email }}"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <!-- Gender -->
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-600">Gender</label>
+                        <select id="gender" name="gender" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                            <option value="Male" {% if artist.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if artist.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if artist.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <!-- Phone Number -->
+                    <div>
+                        <label for="phonenumber" class="block text-sm font-medium text-gray-600">Phone Number</label>
+                        <input type="text" id="phonenumber" name="phonenumber" value="{{ artist.phonenumber }}"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <!-- Date of Birth -->
+                    <div>
+                        <label for="dob" class="block text-sm font-medium text-gray-600">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" value="{{ artist.dob }}"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <!-- Profile Picture -->
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-600">Profile Picture</label>
+                        <input type="file" id="image" name="image" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                </div>
+                <!-- Save Changes Button -->
+                <div>
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
+
+

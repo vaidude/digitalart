@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-600 text-white p-4">
+        <h1 class="text-2xl font-bold text-center">Product List</h1>
+    </header>
+
+    <section class="container mx-auto py-10">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-10">Available Portraits</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% if portraits %}
+                {% for portrait in portraits %}
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="{{ portrait.image.url }}" alt="{{ portrait.title }}" class="w-full h-64 object-cover rounded-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mt-4">{{ portrait.title }}</h3>
+                    <p class="text-gray-600 mt-2">{{ portrait.description|slice:":100" }}...</p>
+                    <p class="text-lg font-semibold text-gray-900 mt-4"> ₹{{ portrait.price }}</p>
+                    <p class="text-lg font-semibold text-gray-900 mt-4">Artist: {{ portrait.artist.username }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500 text-center col-span-3">No portraits available at the moment.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; {{ year }} Portrait Gallery</p>
+    </footer>
+</body>
+</html>

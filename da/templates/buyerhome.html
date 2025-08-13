@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARTREON | Art & Logo Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .hero-bg {
+      background: url("{% static 'img/main.jpeg' %}") no-repeat center center / cover;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-4 shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between">
+      <div class="text-xl font-bold">
+        <a href="/" class="flex items-center">
+          <i class="fas fa-palette mr-2"></i> ARTREON
+        </a>
+      </div>
+      <ul class="hidden md:flex space-x-8">
+        <li><a href="/buyer_profile/" class="hover:text-cyan-200 transition duration-300"><i class="fa-solid fa-user"></i></i>Profile</a></li>
+        {% comment %} <li><a href="/compare_logo/" class="hover:text-cyan-200 transition duration-300"><i class="fas fa-layer-group"></i> Find</a></li> {% endcomment %}
+        <li class="relative group">
+          <a href="#" class="px-4 py-2 text-white hover:text-blue-500 rounded-md"><i class="fa-solid fa-magnifying-glass"></i>Find</a>
+          <ul class="absolute left-0 hidden bg-blue-400  border-blue-500 rounded-md group-hover:block">
+            
+            <li><a href="/artistscan/" class="block px-4 py-2 text-white hover:bg-blue-500">Search Artist</a></li>
+          </ul>
+        </li>
+        
+        
+        <li><a href="/portrait_gallery/" class="hover:text-cyan-200 transition duration-300"><i class="fa-solid fa-photo-film"></i> Portrait</a></li>
+        <li><a href="/myorders/" class="hover:text-cyan-200 transition duration-300"><i class="fas fa-cart-plus mr-2"></i>My Orders</a></li>
+        <li><a href="#gallery" class="hover:text-cyan-200 transition duration-300"><i class="fas fa-th-large mr-1"></i>Gallery</a></li>
+        <li><a href="/display_posts/" class="hover:text-cyan-200 transition duration-300"><i class="fa-solid fa-envelopes-bulk"></i>Posts</a></li>
+        
+        <li><a href="/feedback/" class="hover:text-cyan-200 transition duration-300"><i class="fa-solid fa-message"></i>Rate Us</a></li>
+        <li><a href="/logout/" class="hover:text-cyan-200 transition duration-300"><i class="fas fa-sign-out-alt mr-1"></i>Logout</a></li>
+        {% comment %} <li><a href="/display_posts/" class="hover:text-cyan-200 transition duration-300"><i class="fa-solid fa-envelopes-bulk"></i>Post</a></li> {% endcomment %}
+      </ul>
+      <button class="md:hidden text-white text-2xl focus:outline-none mobile-nav-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-bg flex items-center justify-center text-center text-white">
+    <div class="bg-black bg-opacity-50 p-10 rounded-md">
+      <h1 class="text-5xl font-extrabold mb-4">Welcome to ARTREON</h1>
+      <p class="text-xl mb-6">Unleash your creativity with custom art and logo designs</p>
+      <a href="/portrait_gallery/" class="bg-cyan-500 hover:bg-cyan-400 px-6 py-3 rounded-lg text-lg font-semibold">Get Started</a>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about" class="py-20 bg-gray-100">
+    <div class="container mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-6">About Us</h2>
+      <p class="text-lg text-gray-600">ARTREON is a leading platform for creating and showcasing custom art and logos. We bring your vision to life with designs that stand out in today’s competitive market.</p>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20">
+    <div class="container mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-10">Our Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <i class="fas fa-brush text-5xl text-cyan-500 mb-4"></i>
+          <h3 class="text-xl font-bold"><a href="/logo_creation/">Custom Art Design</a></h3>
+           
+          <p class="text-gray-600">Personalized art designs tailored to your vision and needs.</p>
+        </div>
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <i class="fas fa-pencil-ruler text-5xl text-cyan-500 mb-4"></i>
+          <h3 class="text-xl font-bold">Logo Creation</h3>
+          <p class="text-gray-600">Professional logos that make your brand memorable.</p>
+        </div>
+        <div class="bg-white shadow-lg p-6 rounded-lg">
+          <i class="fas fa-image text-5xl text-cyan-500 mb-4"></i>
+          <h3 class="text-xl font-bold">Gallery Showcase</h3>
+          <p class="text-gray-600">Showcase your designs to a global audience on our platform.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="py-20 bg-gray-100">
+    <div class="container mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-10">Gallery</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for portrait in portraits|slice:":6" %}
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <!-- Ensure the image is displayed -->
+            <img src="{{ portrait.image.url }}" alt="{{ portrait.title }}" class="w-full h-64 object-cover rounded-md">
+            <h3 class="text-xl font-semibold text-gray-800 mt-4">{{ portrait.title }}</h3>
+            <p class="text-gray-600 mt-2">{{ portrait.description|slice:":100" }}...</p>
+            <p class="text-lg font-semibold text-gray-900 mt-4"> ₹{{ portrait.price }}</p>
+            <p class="text-lg font-semibold text-gray-900 mt-4">Artist: {{ portrait.artist.username }}</p>
+        </div>
+        {% endfor %}
+      </div>
+   
+    </div>
+</section>
+
+
+  
+
+  <!-- Contact Section -->
+  <!-- <section id="contact" class="py-20 bg-gray-100">
+    <div class="container mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-6">Contact Us</h2>
+      <p class="text-lg text-gray-600 mb-6">Have questions? We're here to help!</p>
+      <form class="max-w-lg mx-auto">
+        <input type="text" placeholder="Your Name" class="w-full mb-4 p-3 rounded-md border-gray-300">
+        <input type="email" placeholder="Your Email" class="w-full mb-4 p-3 rounded-md border-gray-300">
+        <textarea placeholder="Your Message" class="w-full mb-4 p-3 rounded-md border-gray-300"></textarea>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md">Send Message</button>
+      </form>
+    </div>
+  </section> -->
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="container mx-auto text-center">
+      <p>© 2024 ARTREON. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

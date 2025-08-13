@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Creation Tool</title>
+    <!-- Use Fabric.js from the stable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-8">
+        <h2 class="text-2xl font-semibold text-center mb-8">Logo Creation Tool</h2>
+
+        <!-- Canvas Area -->
+        <div class="flex justify-center">
+            <div class="w-full lg:w-2/3 border p-4 bg-white">
+                <!-- Canvas for drawing -->
+                <canvas id="logoCanvas" width="800" height="600" class="border"></canvas>
+            </div>
+        </div>
+
+        <!-- Tool Buttons -->
+        <div class="mt-8 flex justify-between">
+            <button id="addText" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Text</button>
+            <button id="addRectangle" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Rectangle</button>
+            <button id="addCircle" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Circle</button>
+            <button id="addTriangle" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Triangle</button>
+            <button id="addPolygon" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Polygon</button>
+            <button id="clearCanvas" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Clear</button>
+            <button id="downloadLogo" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Download Logo</button>
+            <button id="pencilTool" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Pencil Tool</button>
+            <button id="brushTool" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Brush Tool</button>
+            <button id="importImage" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Import Image</button>
+            <button id="undoButton" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Undo</button>
+        </div>
+
+        <!-- Form for saving the logo -->
+        <form id="logoForm" method="POST" action="{% url 'save_logo' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="logoData" name="logo_data">
+            <button type="submit" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">Save Logo</button>
+        </form>
+    </div>
+
+    <script>
+        // Initialize fabric.js canvas
+        var canvas = new fabric.Canvas('logoCanvas');
+        canvas.setHeight(600);  // Ensure canvas height
+        canvas.setWidth(800);   // Ensure canvas width
+
+        // History Stack for Undo functionality
+        var undoStack = [];
+
+        // Add Text functionality
+        document.getElementById('addText').addEventListener('click', function() {
+            var text = new fabric.Textbox('Enter your text here', {
+                left: 100,
+                top: 100,
+                fontSize: 30,
+                fill: '#000',
+                fontFamily: 'Arial',
+                editable: true
+            });
+            canvas.add(text);
+            pushToUndoStack();
+        });
+
+        // Add Rectangle functionality
+        document.getElementById('addRectangle').addEventListener('click', function() {
+            var rectangle = new fabric.Rect({
+                left: 100,
+                top: 150,
+                fill: 'blue',
+                width: 150,
+                height: 100,
+                angle: 0
+            });
+            canvas.add(rectangle);
+            pushToUndoStack();
+        });
+
+        // Add Circle functionality
+        document.getElementById('addCircle').addEventListener('click', function() {
+            var circle = new fabric.Circle({
+                left: 150,
+                top: 250,
+                radius: 50,
+                fill: 'red'
+            });
+            canvas.add(circle);
+            pushToUndoStack();
+        });
+
+        // Add Triangle functionality
+        document.getElementById('addTriangle').addEventListener('click', function() {
+            var triangle = new fabric.Triangle({
+                left: 250,
+                top: 350,
+                width: 100,
+                height: 100,
+                fill: 'green'
+            });
+            canvas.add(triangle);
+            pushToUndoStack();
+        });
+
+        // Add Polygon functionality
+        document.getElementById('addPolygon').addEventListener('click', function() {
+            var polygon = new fabric.Polygon([ 
+                { x: 300, y: 400 }, 
+                { x: 400, y: 400 }, 
+                { x: 350, y: 500 }
+            ], {
+                fill: 'purple',
+                left: 200,
+                top: 200
+            });
+            canvas.add(polygon);
+            pushToUndoStack();
+        });
+
+        // Clear the canvas
+        document.getElementById('clearCanvas').addEventListener('click', function() {
+            canvas.clear();  // Clear all elements on the canvas
+            pushToUndoStack();
+        });
+
+        // Download the logo as an image
+        document.getElementById('downloadLogo').addEventListener('click', function() {
+            var dataURL = canvas.toDataURL('image/png'); // Convert canvas to image URL
+            var a = document.createElement('a');         // Create an anchor element to trigger download
+            a.href = dataURL;
+            a.download = 'logo.png';                     // Set the default file name
+            a.click();                                   // Trigger the download
+        });
+
+        // Pencil Tool functionality
+        document.getElementById('pencilTool').addEventListener('click', function() {
+            canvas.isDrawingMode = true;  // Turn on drawing mode
+            canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);  // Pencil brush
+            canvas.freeDrawingBrush.width = 5;  // Pencil width
+        });
+
+        // Brush Tool functionality
+        document.getElementById('brushTool').addEventListener('click', function() {
+            canvas.isDrawingMode = true;  // Turn on drawing mode
+            canvas.freeDrawingBrush = new fabric.Brush(canvas);  // Brush tool
+            canvas.freeDrawingBrush.width = 10;  // Brush width
+            canvas.freeDrawingBrush.color = 'black';  // Brush color
+        });
+
+        // Import Image functionality
+        document.getElementById('importImage').addEventListener('click', function() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            input.addEventListener('change', function(e) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var imgObj = new Image();
+                    imgObj.src = event.target.result;
+                    imgObj.onload = function() {
+                        var img = new fabric.Image(imgObj);
+                        img.set({
+                            left: 100,
+                            top: 100,
+                            angle: 0,
+                            width: 200,
+                            height: 200
+                        });
+                        canvas.add(img);
+                        pushToUndoStack();
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            });
+
+            input.click();  // Trigger file input click
+        });
+
+        // Push the current canvas state to the undo stack
+        function pushToUndoStack() {
+            var json = canvas.toJSON();  // Convert the current canvas state to JSON
+            undoStack.push(json);  // Save it to the undo stack
+        }
+
+        // Undo functionality
+        document.getElementById('undoButton').addEventListener('click', function() {
+            if (undoStack.length > 0) {
+                undoStack.pop();  // Remove the last action
+                var lastState = undoStack[undoStack.length - 1];  // Get the previous state
+                if (lastState) {
+                    canvas.loadFromJSON(lastState, canvas.renderAll.bind(canvas));  // Restore previous state
+                } else {
+                    canvas.clear();  // If no more states, clear the canvas
+                }
+            }
+        });
+
+        // Save logo data (base64 string) in the hidden input field
+        document.getElementById('logoForm').addEventListener('submit', function(event) {
+            var logoData = canvas.toDataURL('image/png');  // Get the base64 string of the canvas image
+            document.getElementById('logoData').value = logoData;  // Set it in the hidden input field
+        });
+    </script>
+
+</body>
+</html>

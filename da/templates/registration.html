@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            background: linear-gradient(to right, rgb(94, 7, 62), rgb(4, 4, 90));
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            color: rgb(94, 7, 62);
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .gender-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .terms {
+            text-align: left;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: rgb(148, 17, 95);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .register-btn:hover {
+            background-color: rgb(121, 13, 78);
+        }
+
+        .login-link {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: rgb(4, 4, 90);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const dob = document.getElementById("dob").value;
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const phone = document.getElementById("phonenumber").value.trim();
+            const agree = document.getElementById("agree").checked;
+            const today = new Date();
+            const birthDate = new Date(dob);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phonePattern = /^[0-9]{10}$/;
+
+            if (name.length < 3) {
+                alert("Username must be at least 3 characters long.");
+                return;
+            }
+
+            if (!phonePattern.test(phone)) {
+                alert("Phone number must be exactly 10 digits.");
+                return;
+            }
+
+            if (age < 7) {
+                alert("Age must be above 7 years.");
+                return;
+            }
+
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return;
+            }
+
+            if (!agree) {
+                alert("You must agree to the terms and conditions.");
+                return;
+            }
+
+            document.getElementById("registrationForm").submit();
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Register</h2>
+        <form id="registrationForm" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
+            {% csrf_token %}
+            <label for="name">User Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="image">Image</label>
+            <input type="file" id="image" name="image" required>
+
+            <label>Gender</label>
+            <div class="gender-options">
+                <label><input type="radio" name="gender" value="male" required> Male</label>
+                <label><input type="radio" name="gender" value="female" required> Female</label>
+                <label><input type="radio" name="gender" value="others" required> Others</label>
+            </div>  
+
+            <label for="phonenumber">Phone Number</label>
+            <input type="tel" id="phonenumber" name="phonenumber" maxlength="10" pattern="[0-9]{10}" required>
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <div class="terms">
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree">I agree to <a href="/terms/">the terms and conditions</a></label>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="/login/">Log In</a>
+        </div>
+    </div>
+
+</body>
+</html>

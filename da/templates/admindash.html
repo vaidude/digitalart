@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .animated-number {
+            font-size: 2rem;
+            color: #1D4ED8;
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 h-screen bg-white shadow-md">
+            <div class="p-5">
+                <h2 class="text-2xl font-bold text-gray-800">Admin Panel</h2>
+                <div class="mt-5">
+                    <a href="#" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="ml-3">Dashboard</span>
+                    </a>
+                    {% comment %} <a href="/artistlist/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-users"></i>
+                        <span class="ml-3">User List</span>
+                    </a> {% endcomment %}
+                    <a href="/artistlist/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-paint-brush"></i>
+                        <span class="ml-3">Artist List</span>
+                    </a>
+                    <a href="/buyerlist/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-users"></i>
+                        <span class="ml-3">Buyer List</span>
+                    </a>
+                    <a href="/productlist/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-images"></i>
+                        <span class="ml-3">Portraits</span>
+                    </a>
+                    <a href="/feedback_list/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-envelope"></i>
+                        <span class="ml-3">Feedbacks</span>
+                    </a>
+                    <a href="/logout/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="ml-3">Logout</span>
+                    </a>
+                    <a href="/orders/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="ml-3">Manage Orders</span>
+                    </a>
+                    <a href="/spams/" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span class="ml-3">Spam</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-5">
+            <header class="flex justify-between items-center">
+                <h1 class="text-3xl font-semibold text-gray-800">Dashboard</h1>
+                <div>
+                    <a href="/logout/" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Logout</a>
+                </div>
+            </header>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Total Users -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold text-gray-800">Total Users</h3>
+                    <p class="animated-number">{{ total_users }}</p>
+                </div>
+            
+                <!-- Total Artists -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold text-gray-800">Total Artists</h3>
+                    <p class="animated-number">{{ total_artists }}</p>
+                </div>
+            
+                <!-- Total Buyers -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold text-gray-800">Total Buyers</h3>
+                    <p class="animated-number">{{ total_buyers }}</p>
+                </div>
+            
+                <!-- Total Portraits -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold text-gray-800">Total Portraits</h3>
+                    <p class="animated-number">{{ total_portraits }}</p>
+                </div>
+            
+                <!-- Feedbacks -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold text-gray-800">Feedbacks</h3>
+                    <p class="animated-number">{{ total_feedbacks }}</p>
+                </div>
+            </div>
+            
+    <script>
+        // Function to generate a random number within a given range
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Function to update the number with animation
+        function updateNumber(id, value) {
+            let element = document.getElementById(id);
+            let startValue = 0;
+            let endValue = value;
+            let duration = 2000; // Duration in milliseconds
+            let increment = (endValue - startValue) / (duration / 50); // Increment per frame
+
+            let interval = setInterval(function() {
+                startValue += increment;
+                element.textContent = Math.round(startValue);
+
+                if (startValue >= endValue) {
+                    clearInterval(interval); // Stop the animation once the target is reached
+                    element.textContent = endValue;
+                }
+            }, 50); // Update every 50ms
+        }
+
+        window.onload = function() {
+            // Generate random numbers for each section
+            const totalUsersRandom = getRandomNumber(1, 250);
+            const totalPortraitsRandom = getRandomNumber(1, 250);
+            const feedbacksRandom = getRandomNumber(1, 250);
+            const totalArtistsRandom = getRandomNumber(1, 250);
+            const totalBuyersRandom = getRandomNumber(1, 250);
+
+            // Update the numbers with animation
+            updateNumber('total-users', totalUsersRandom);
+            updateNumber('total-portraits', totalPortraitsRandom);
+            updateNumber('feedbacks', feedbacksRandom);
+            updateNumber('total-artists', totalArtistsRandom);
+            updateNumber('total-buyers', totalBuyersRandom);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            background: linear-gradient(rgb(94, 7, 62), rgb(4, 4, 90));
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #930f4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #7c0d40;
+        }
+        .text-center {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .error {
+            color: red;
+            font-size: 13px;
+            display: none;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            
+            let dob = document.getElementById("dob").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let agree = document.getElementById("agree").checked;
+            let phone = document.getElementById("phonenumber").value;
+            let name = document.getElementById("name").value;
+
+            let today = new Date();
+            let birthDate = new Date(dob);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            let monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let phonePattern = /^[0-9]{10}$/;
+
+            if (name.trim().length < 3) {
+                alert( "Name must be at least 3 characters long.");
+                return;
+            } 
+
+            if (age < 7) {
+                alert( "You must be at least 7 years old.");
+                return;
+            } 
+            
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            } 
+
+            if (!phonePattern.test(phone)) {
+                alert( "Enter a valid 10-digit phone number.");
+                return;
+            } 
+
+            if (password.length < 6) {
+                alert( "Password must be at least 6 characters long.");
+                return;
+            } 
+            if (!agree) {
+                alert("You must agree to the terms and conditions.");
+                return;
+            }
+
+            document.getElementById("registrationForm").submit();
+        }
+
+        function showError(id, message) {
+            let errorElement = document.getElementById(id);
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+        }
+
+        function hideError(id) {
+            document.getElementById(id).style.display = "none";
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Register</h2>
+
+        <form id="registrationForm" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
+            {% csrf_token %}
+
+            <label for="name">User Name</label>
+            <input type="text" id="name" name="username" required>
+            <div id="nameError" class="error"></div>
+
+            <label for="image">Profile Image</label>
+            <input type="file" id="image" name="image" required>
+
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+
+            <label>Gender</label>
+            <input type="radio" name="gender" value="MALE" required> Male
+            <input type="radio" name="gender" value="FEMALE" required> Female
+            <input type="radio" name="gender" value="OTHERS" required> Others
+
+            <label for="phonenumber">Phone Number</label>
+            <input type="tel" id="phonenumber" name="phonenumber" maxlength="10" required>
+            <div id="phoneError" class="error"></div>
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required>
+            <div id="dobError" class="error"></div>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <div id="emailError" class="error"></div>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <div id="passwordError" class="error"></div>
+
+            <input type="checkbox" id="agree" name="agree">
+            <label for="agree">I agree to <a href="/terms/">the terms and conditions</a></label>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="text-center">
+            <p>Already have an account? <a href="/buyerlogin/" class="text-blue-500 font-semibold hover:underline">LOG IN</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Comparison</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts for enhanced typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-gradient-to-r from-blue-500 to-cyan-400 text-gray-900 font-poppins">
+
+    <div class="container mx-auto p-8 md:px-16 lg:px-24">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+            
+            <h1 class="text-4xl font-bold text-center text-gray-700 mb-6">
+                
+                <i class="fas fa-image mr-2"></i> Upload and Compare Your Logo
+            </h1>
+            Check Logo to ensure that it was created by you
+            
+            <form action="/compare_logo/" method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="mb-6">
+                    <label for="logo" class="block text-lg font-semibold text-gray-800">Choose your logo to upload:</label>
+                    <input type="file" name="logo" id="logo" class="mt-2 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                
+                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out">
+                    <i class="fas fa-upload mr-2"></i> Upload and Compare
+                </button>
+            </form>
+            
+            {% if result %}
+                <!-- Conditionally render result message with color change based on match -->
+                <div class="mt-8 text-center p-4 rounded-md shadow-md {% if result == 'Logo already exists' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                    <p class="text-xl font-semibold">{{ result }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Tailwind CSS Customizations -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+
+</body>
+</html>

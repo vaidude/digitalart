@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+</head>
+<body>
+    <h1>Payment Successful</h1>
+    <p>Thank you for purchasing <strong>{{ portrait.title }}</strong>!</p>
+    <p>Your payment has been successfully processed.</p>
+    <p>Transaction ID: {{ portrait.id }}</p>
+    <p><a href="{% url 'portrait_gallery' %}">Back to Gallery</a></p>
+</body>
+</html>

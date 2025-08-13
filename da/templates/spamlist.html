@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reported Spams</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Reported Spams</h1>
+            <a href="/" class="text-white px-4 py-2 bg-blue-500 rounded-lg hover:bg-blue-700 transition">Home</a>
+        </div>
+    </nav>
+
+    <!-- Spams List Section -->
+    <div class="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+        <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">List of Reported Artists</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                <thead>
+                    <tr class="bg-gray-800 text-white">
+                        <th class="px-6 py-3 text-left">Profile</th>
+                        <th class="px-6 py-3 text-left">Username</th>
+                        <th class="px-6 py-3 text-left">Email</th>
+                        <th class="px-6 py-3 text-left">Phone</th>
+                        <th class="px-6 py-3 text-left">Reports</th>
+                        <th class="px-6 py-3 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-gray-100">
+                    {% for spam in spammers %}
+                    <tr class="border-t border-gray-300 hover:bg-gray-200 transition">
+                        <td class="px-6 py-3">
+                            {% if spam.artist.image %}
+                                <img src="{{ spam.artist.image.url }}" alt="Profile" class="w-10 h-10 rounded-full">
+                            {% else %}
+                                <i class="fa fa-user-circle text-gray-500 text-2xl"></i>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3">{{ spam.artist.username }}</td>
+                        <td class="px-6 py-3">{{ spam.artist.email }}</td>
+                        <td class="px-6 py-3">
+                            {% if spam.artist.phonenumber %}
+                                {{ spam.artist.phonenumber }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3 text-red-500 font-bold">{{ spam.reports }}</td>
+                        <td class="px-6 py-3 text-center">
+                            <a href="{% url 'delete_artist' spam.artist.id %}" class="text-red-500 hover:underline">Remove</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-3 text-center text-gray-500">No reported spams found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

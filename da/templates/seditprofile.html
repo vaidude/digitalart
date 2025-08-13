@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    
+    <div class="container emp-profile">
+        <form method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img">
+                        {% if edit.image %}
+                        <img src="{{edit.image.url}}" alt=""/>
+                        {% else %}
+                        <p>Image not found</p>
+                        {% endif %}
+                        <div class="file btn btn-lg btn-primary">
+                            Change Photo
+                            <input type="file" name="image"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <!-- Profile fields inside the box -->
+                    <div class="profile-box">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>User Name :</label>
+                                        <input type="text" id="name" name="name" value="{{edit.username}}" required style="width: 100%; padding: 8px; border: 1px solid #f7f4f4; border-radius: 3px;" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>DOB :</label>
+                                        <input type="date" id="dob" name="dob" value="{{edit.dob|date:'Y-m-d'}}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px;" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Email :</label>
+                                        <input type="email" id="email" name="email" value="{{edit.email}}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px;" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Phone :</label>
+                                        <input type="tel" id="phonenumber" name="phonenumber" value="{{edit.phonenumber}}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px;" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Gender :</label>
+                                        <input type="text" id="gender" name="gender" value="{{edit.gender}}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px;" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="profile-edit-btn" name="btnAddMore" value="submit">SUBMIT</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- End of profile-box -->
+                </div>
+            </div>
+        </form>           
+    </div>
+
+    <style>
+        body{
+            background: -webkit-linear-gradient(left, #dd3c98, #0b83a4);
+        }
+        .emp-profile{
+            padding: 3%;
+            margin-top: 3%;
+            margin-bottom: 3%;
+            border-radius: 0.5rem;
+            background: #090909;
+        }
+        .profile-img{
+            text-align: center;
+        }
+        .profile-img img{
+            width: 70%;
+            height: 100%;
+        }
+        .profile-img .file {
+            position: relative;
+            overflow: hidden;
+            margin-top: -20%;
+            width: 70%;
+            border: none;
+            border-radius: 0;
+            font-size: 15px;
+            background: #070708b8;
+        }
+        .profile-img .file input {
+            position: absolute;
+            opacity: 0;
+            right: 0;
+            top: 0;
+        }
+        .profile-head h5{
+            color: #f8efef;
+        }
+        .profile-head h6{
+            color: #0062cc;
+        }
+        .profile-edit-btn{
+            border: none;
+            border-radius: 1.5rem;
+            width: 70%;
+            padding: 2%;
+            font-weight: 600;
+            color: #000000;
+            cursor: pointer;
+        }
+        .proile-rating{
+            font-size: 12px;
+            color: #ffffff;
+            margin-top: 5%;
+        }
+        .proile-rating span{
+            color: #e1e7ed;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .profile-head .nav-tabs{
+            margin-bottom:5%;
+        }
+        .profile-head .nav-tabs .nav-link{
+            font-weight:600;
+            border: none;
+        }
+        .profile-head .nav-tabs .nav-link.active{
+            border: none;
+            border-bottom:2px solid #0062cc;
+        }
+        .profile-work{
+            padding: 14%;
+            margin-top: -15%;
+        }
+        .profile-work p{
+            font-size: 12px;
+            color: #e1e1e4;
+            font-weight: 600;
+            margin-top: 10%;
+        }
+        .profile-work a{
+            text-decoration: none;
+            color: #e9edf0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .profile-work ul{
+            list-style: none;
+        }
+        .profile-tab label{
+            font-weight: 600;
+        }
+        .profile-tab p{
+            font-weight: 600;
+            color: #0062cc;
+        }
+        /* Adding the box styling */
+        .profile-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #e9e1e1;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+     
+</body>
+</html>

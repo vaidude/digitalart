@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Feedback List</title>
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(90deg, #7B2043, #e610bf);
+            color: white;
+            padding: 15px 0;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .feedback-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fff;
+        }
+
+        .feedback-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-item h3 {
+            margin-top: 0;
+            color: #7B2043;
+        }
+
+        .feedback-item p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .feedback-item strong {
+            color: #e610bf;
+        }
+
+        .no-feedback {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #7B2043;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Feedback List</h1>
+    <div class="container">
+        {% if feedback %}
+            {% for item in feedback %}
+                <div class="feedback-item">
+                    <h3>Rating: {{ item.rating }}</h3>
+                    <p><strong>Portrait:</strong> {{ item.product.title }}</p>
+                    <p><strong>Email:</strong> {{ item.email }}</p>
+                    <p><strong>Feedback:</strong> {{ item.feedback_text }}</p>
+                    <p><strong>Created at:</strong> {{ item.created_at|date:"F j, Y, g:i a" }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-feedback">No feedback available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

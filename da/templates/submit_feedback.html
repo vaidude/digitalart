@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">Product Feedback</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="rating" class="block text-lg font-semibold text-gray-800">Rating</label>
+                    <select id="rating" name="rating" class="mt-2 w-full p-2 border rounded-md" required>
+                        <option value="1">1 - Poor</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="3">3 - Good</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="5">5 - Excellent</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="feedback_text" class="block text-lg font-semibold text-gray-800">Your Feedback</label>
+                    <textarea id="feedback_text" name="feedback_text" rows="4" class="mt-2 w-full p-2 border rounded-md" placeholder="Write your feedback here..." required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="block text-lg font-semibold text-gray-800">Your Email</label>
+                    <input type="email" id="email" name="email" class="mt-2 w-full p-2 border rounded-md" placeholder="Enter your email" required>
+                </div>
+
+                <input type="hidden" name="product_id" value="{{ portrait.id }}">
+
+                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Submit Feedback
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

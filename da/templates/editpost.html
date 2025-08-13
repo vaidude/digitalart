@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        /* Custom Styles for the page */
+        .input-field {
+            border: 1px solid #DBDBDB;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 14px;
+            margin-bottom: 16px;
+            background-color: #fafafa;
+        }
+
+        .input-field:focus {
+            border-color: #0095f6;
+            outline: none;
+            background-color: white;
+        }
+
+        .btn-submit {
+            background-color: #0095f6;
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #006db2;
+        }
+
+        .form-container {
+            max-width: 500px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            border-radius: 10px;
+            animation: fadeInUp 0.5s;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            display: none;
+            margin-top: 16px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 16px;
+            text-center;
+            font-size: 14px;
+            color: #0095f6;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="form-container">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Edit Post</h2>
+
+            <!-- Post Form -->
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Community Dropdown -->
+                
+            
+                <!-- Description Field -->
+                <textarea name="description" class="input-field" rows="4" placeholder="Write a description...">{{ edit.description }}</textarea>
+            
+                <!-- Image Upload -->
+                <input type="file" name="image" class="input-field" accept="image/*" onchange="previewImage(event)">
+                
+                <!-- Image Preview -->
+                <img id="preview-img" class="image-preview" alt="Image Preview">
+            
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">Update Post</button>
+            </form>
+            
+            <!-- Back to Home Link -->
+            <div class="mt-4 text-center">
+                <a href="{% url 'home' %}" class="back-link">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Image Preview -->
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                const previewImg = document.getElementById('preview-img');
+                previewImg.src = reader.result;
+                previewImg.classList.remove('hidden');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Creation Tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .tool-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tool-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h2 class="text-2xl font-semibold text-center mb-8">Artist Canvas</h2>
+        <div class="flex flex-wrap justify-center">
+            
+            <div class="flex flex-col space-y-2">
+                <form id="logoForm" method="POST" action="{% url 'logo_creation' %}" enctype="multipart/form-data" onsubmit="return validateLogo()">
+                    {% csrf_token %}
+                    <input type="hidden" id="logoData" name="logo_data" required>
+                    <button type="submit" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">Save Logo</button>
+                </form>
+                <div class="mt-4">
+                    <label for="colorPicker" class="block text-sm">Brush Color:</label>
+                    <input type="color" id="colorPicker" value="#000000" class="border p-2 mt-2">
+                </div>
+                <button id="addRectangle" class="tool-btn">Add Rectangle</button>
+                <button id="addCircle" class="tool-btn">Add Circle</button>
+                <button id="addTriangle" class="tool-btn">Add Triangle</button>
+                <button id="addText" class="tool-btn">Add Text</button>
+                <button id="clearCanvas" class="tool-btn">Clear</button>
+                <input type="file" id="importFile" accept="image/*" class="hidden">
+                {% comment %} <label for="importFile" id="importLabel" class="tool-btn">Import Image</label> {% endcomment %}
+            </div>
+            <div class="w-full lg:w-2/3 border p-4 bg-white mx-4">
+                <canvas id="logoCanvas" width="700" height="500" class="border"></canvas>
+            </div>
+            <div class="flex flex-col space-y-2">
+                <button id="downloadCanvas" class="tool-btn">Download Canvas</button>
+                <button id="brushTool" class="tool-btn">Brush Tool</button>
+                <button id="increaseStroke" class="tool-btn">Increase Stroke</button>
+                <button id="decreaseStroke" class="tool-btn">Decrease Stroke</button>
+                <button id="toggleDrawMode" class="tool-btn">Toggle Draw Mode</button>
+                <button id="undoButton" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-2">Undo</button>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <script>
+        let canvas = new fabric.Canvas('logoCanvas');
+        canvas.setHeight(600);
+        canvas.setWidth(800);
+        let isDrawingMode = false;
+        let brushColor = '#000000';
+        let brushWidth = 5;
+        let undoStack = [];
+        let redoStack = [];
+
+        function saveState() {
+            undoStack.push(canvas.toJSON());
+        }
+
+        function undo() {
+            if (undoStack.length > 1) {
+                redoStack.push(undoStack.pop());
+                const prevState = undoStack[undoStack.length - 1];
+                canvas.loadFromJSON(prevState, canvas.renderAll.bind(canvas));
+            } else {
+                alert('Nothing to undo!');
+            }
+        }
+
+        saveState();
+
+        document.getElementById('addRectangle').addEventListener('click', function() {
+            let rectangle = new fabric.Rect({
+                left: 100,
+                top: 150,
+                fill: null,
+                width: 150,
+                height: 100,
+                stroke: 'black',
+                strokeWidth: 5
+            });
+            canvas.add(rectangle);
+            saveState();
+        });
+
+        document.getElementById('addCircle').addEventListener('click', function() {
+            let circle = new fabric.Circle({
+                left: 150,
+                top: 250,
+                radius: 50,
+                fill: null,
+                stroke: 'black',
+                strokeWidth: 5
+            });
+            canvas.add(circle);
+            saveState();
+        });
+
+        document.getElementById('addTriangle').addEventListener('click', function() {
+            let triangle = new fabric.Triangle({
+                left: 250,
+                top: 350,
+                width: 100,
+                height: 100,
+                fill: null,
+                stroke: 'black',
+                strokeWidth: 5
+            });
+            canvas.add(triangle);
+            saveState();
+        });
+
+        document.getElementById('addText').addEventListener('click', function() {
+            let text = new fabric.Textbox('Enter your text here', {
+                left: 100,
+                top: 100,
+                fontSize: 30,
+                fill: '#000',
+                fontFamily: 'Arial',
+                editable: true
+            });
+            canvas.add(text);
+            saveState();
+        });
+
+        document.getElementById('clearCanvas').addEventListener('click', function() {
+            canvas.clear();
+            saveState();
+        });
+
+        document.getElementById('colorPicker').addEventListener('input', function(e) {
+            brushColor = e.target.value;
+            let activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                activeObject.set('fill', brushColor);
+                canvas.renderAll();
+                saveState();
+            }
+        });
+
+        document.getElementById('importFile').addEventListener('change', function(e) {
+            let file = e.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    fabric.Image.fromURL(event.target.result, function(img) {
+                        img.set({ left: 100, top: 100 });
+                        canvas.add(img);
+                        saveState();
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('downloadCanvas').addEventListener('click', function() {
+            let dataURL = canvas.toDataURL({ format: 'png' });
+            let link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'canvas_image.png';
+            link.click();
+        });
+
+        document.getElementById('brushTool').addEventListener('click', function() {
+            isDrawingMode = !isDrawingMode;
+            canvas.isDrawingMode = isDrawingMode;
+            canvas.freeDrawingBrush.color = brushColor;
+            canvas.freeDrawingBrush.width = brushWidth;
+            this.textContent = isDrawingMode ? 'Disable Brush Tool' : 'Brush Tool';
+        });
+
+        document.getElementById('increaseStroke').addEventListener('click', function() {
+            brushWidth += 1;
+            if (canvas.isDrawingMode) {
+                canvas.freeDrawingBrush.width = brushWidth;
+            }
+        });
+
+        document.getElementById('decreaseStroke').addEventListener('click', function() {
+            brushWidth = Math.max(1, brushWidth - 1);
+            if (canvas.isDrawingMode) {
+                canvas.freeDrawingBrush.width = brushWidth;
+            }
+        });
+
+        document.getElementById('toggleDrawMode').addEventListener('click', function() {
+            canvas.isDrawingMode = !canvas.isDrawingMode;
+        });
+
+        document.getElementById('undoButton').addEventListener('click', undo);
+
+        function validateLogo() {
+            let logoData = canvas.toDataURL('image/png');
+            if (!logoData || logoData === 'data:,') {
+                alert('Please create a logo before submitting!');
+                return false;
+            }
+            document.getElementById('logoData').value = logoData;
+            return true;
+        }
+
+        canvas.on('object:added', saveState);
+        canvas.on('object:modified', saveState);
+        canvas.on('object:removed', saveState);
+    </script>
+</body>
+</html>

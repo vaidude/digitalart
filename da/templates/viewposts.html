@@ -1,0 +1,272 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-white shadow sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-gray-800">Your Feed</h1>
+                <div class="flex space-x-4">
+                    <a href="/home/" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-home text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-user text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-cog text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Posts Container -->
+    <div class="max-w-6xl mx-auto mt-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in post %}
+        <!-- Post Card -->
+        <div class="bg-white rounded-lg shadow overflow-hidden h-[350px] w-[350px] mx-auto">
+            <!-- Post Header -->
+            <div class="flex items-center px-4 py-3 border-b border-gray-200">
+                <img src="{{ post.user.image.url }}" alt="User Profile" class="w-8 h-8 rounded-full">
+                <div class="ml-3">
+                    <p class="text-gray-800 font-medium text-sm">{{ post.user.email }}</p>
+                    <p class="text-xs text-gray-500">Posted on {{ post.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Post Content -->
+            <div class="h-44 flex items-center justify-center">
+                {% if post.file_type == 'image' %}
+                <img src="{{ post.post_pic.url }}" alt="Post Image" class="w-full h-full object-cover">
+                {% elif post.file_type == 'video' %}
+                <video controls class="w-full h-full object-cover">
+                    <source src="{{ post.post_pic.url }}" type="video/{{ post.post_pic.url|slice:'-3' }}">
+                    Your browser does not support the video tag.
+                </video>
+                {% elif post.file_type == 'pdf' %}
+                <a href="{{ post.post_pic.url }}" target="_blank" class="text-blue-500 hover:underline">
+                    View PDF
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Post Description -->
+            <div class="px-4 py-2">
+                <p class="text-gray-800 text-sm truncate">{{ post.description }}</p>
+            </div>
+
+            <!-- Post Actions -->
+            <div class="flex items-center justify-between px-4 py-2 bg-gray-50">
+                <div class="flex items-center space-x-3">
+                    
+                    
+                    
+                </div>
+                <div class="flex items-center justify-between mb-4 pt-2 border-t border-gray-200">
+                    <div class="text-gray-600">
+                        <button onclick="toggleLike(this)" class="text-gray-600 hover:text-pink-500">
+                            <i class="fa fa-heart"></i><span>{{ post.likes_count }} likes</span> 
+                        </button>
+                        <button class="text-gray-600 hover:text-blue-500">
+                            <i class="fa fa-comment"></i><span>{{ post.comment_count }} comments</span>
+                        </button>
+                        <button class="text-gray-600 hover:text-green-500">
+                            <i class="fa fa-share"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'editepost' post.id %}" class="text-blue-500 hover:underline mr-3">Edit</a>
+                    <a href="{% url 'deletepost' post.id %}" class="text-red-500 hover:underline">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-600 mt-6">You haven't posted anything yet.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleLike(btn) {
+            const likeIcon = btn.querySelector('i');
+            const isLiked = likeIcon.classList.contains('liked');
+            if (isLiked) {
+                likeIcon.classList.remove('liked');
+                btn.classList.remove('text-pink-500');
+                btn.classList.add('text-gray-600');
+            } else {
+                likeIcon.classList.add('liked');
+                btn.classList.add('text-pink-500');
+                btn.classList.remove('text-gray-600');
+            }
+        }
+    </script>
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-white shadow sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-gray-800">Your Feed</h1>
+                <div class="flex space-x-4">
+                    <a href="/home/" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-home text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-user text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800">
+                        <i class="fa fa-cog text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Posts Container -->
+    <div class="max-w-6xl mx-auto mt-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in post %}
+        <!-- Post Card -->
+        <div class="bg-white rounded-lg shadow overflow-hidden h-auto w-[350px] mx-auto">
+            <!-- Post Header -->
+            <div class="flex items-center px-4 py-3 border-b border-gray-200">
+                <img src="{{ post.user.image.url }}" alt="User Profile" class="w-8 h-8 rounded-full">
+                <div class="ml-3">
+                    <p class="text-gray-800 font-medium text-sm">{{ post.user.email }}</p>
+                    <p class="text-xs text-gray-500">Posted on {{ post.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Post Content -->
+            <div class="h-44 flex items-center justify-center">
+                {% if post.file_type == 'image' %}
+                <img src="{{ post.post_pic.url }}" alt="Post Image" class="w-full h-full object-cover">
+                {% elif post.file_type == 'video' %}
+                <video controls class="w-full h-full object-cover">
+                    <source src="{{ post.post_pic.url }}" type="video/{{ post.post_pic.url|slice:'-3' }}">
+                    Your browser does not support the video tag.
+                </video>
+                {% elif post.file_type == 'pdf' %}
+                <a href="{{ post.post_pic.url }}" target="_blank" class="text-blue-500 hover:underline">
+                    View PDF
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Post Description -->
+            <div class="px-4 py-2">
+                <p class="text-gray-800 text-sm truncate">{{ post.description }}</p>
+            </div>
+
+            <!-- Post Actions -->
+            <div class="px-4 py-2 bg-gray-50">
+                <div class="flex items-center justify-between">
+                    <button onclick="toggleLike(this)" class="text-gray-600 hover:text-pink-500">
+                        <i class="fa fa-heart"></i> <span>{{ post.likes_count }} likes</span>
+                    </button>
+                    <button class="text-gray-600 hover:text-blue-500 toggle-comments" data-target="#comments-{{ post.id }}">
+                        <i class="fa fa-comment"></i> <span>{{ post.comment_count }} comments</span>
+                    </button>
+                    <button class="text-gray-600 hover:text-green-500">
+                        <i class="fa fa-share"></i>
+                    </button>
+                </div>
+
+                <div class="flex justify-end mt-2">
+                    <a href="{% url 'editepost' post.id %}" class="text-blue-500 hover:underline mr-3">Edit</a>
+                    <a href="{% url 'deletepost' post.id %}" class="text-red-500 hover:underline">Delete</a>
+                </div>
+            </div>
+
+            <!-- Comments Section (Initially Hidden) -->
+            <div id="comments-{{ post.id }}" class="comments-section hidden px-4 py-2 border-t border-gray-200">
+                <h3 class="text-gray-800 font-semibold text-sm mb-2">Comments</h3>
+                <ul class="space-y-2 mb-2">
+                    {% if post.comment_count == 0 %}
+                        <li class="text-gray-500 text-sm italic">No comments yet</li>
+                    {% else %}
+                    {% for comment in post.commentsectionmodel_set.all %}
+                    <p>{{comment}}</p>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 mr-3">
+                            {% if comment.user.image %}
+                                <img src="{{ comment.user.image.url }}" alt="Profile Picture" class="w-8 h-8 rounded-full">
+                            {% else %}
+                                <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-600 text-xs"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow bg-gray-100 rounded-lg p-3">
+                        
+                            <p class="font-semibold text-sm">{{ comment.user.username }}</p>
+                            <p class="text-sm text-gray-800">{{ comment.comment }}</p>
+                            {% if comment.user == us %}
+                                <a href="/comments_delete/{{ comment.id }}/" class="text-red-500 hover:underline text-xs">
+                                    <i class="fa-regular fa-trash-can"></i> Delete
+                                </a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+                    {% endif %}
+                </ul>
+                <form action="{% url 'u_add_comment' post.id %}" method="POST" class="flex items-center mt-2">
+                    {% csrf_token %}
+                    <input type="text" name="comment" class="flex-grow bg-gray-100 border border-gray-300 rounded-full px-3 py-1 text-sm" placeholder="Add a comment...">
+                    <button type="submit" class="ml-2 text-blue-600 font-semibold text-sm">Post</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-600 mt-6">You haven't posted anything yet.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleLike(btn) {
+            const likeIcon = btn.querySelector('i');
+            const isLiked = likeIcon.classList.contains('liked');
+            if (isLiked) {
+                likeIcon.classList.remove('liked');
+                btn.classList.remove('text-pink-500');
+                btn.classList.add('text-gray-600');
+            } else {
+                likeIcon.classList.add('liked');
+                btn.classList.add('text-pink-500');
+                btn.classList.remove('text-gray-600');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.toggle-comments').forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = document.querySelector(button.getAttribute('data-target'));
+                    if (target) {
+                        target.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

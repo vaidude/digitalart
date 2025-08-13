@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-2xl font-bold">Order Management</a>
+            <a href="{% url 'home' %}" class="text-white px-4 py-2 bg-red-500 rounded-lg hover:bg-red-700 transition">Home</a>
+        </div>
+    </nav>
+
+    <!-- Order List Section -->
+    <div class="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+        <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">Manage Orders</h2>
+        
+        {% if messages %}
+        {% for message in messages %}
+        <div class="text-center text-sm text-white px-4 py-2 mb-4 bg-green-500 rounded-lg">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                <thead>
+                    <tr class="bg-gray-800 text-white">
+                        <th class="px-6 py-3 text-left">Order ID</th>
+                        <th class="px-6 py-3 text-left">Buyer</th>
+                        <th class="px-6 py-3 text-left">Portrait</th>
+                        <th class="px-6 py-3 text-left">Status</th>
+                        <th class="px-6 py-3 text-center">Update Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-gray-100">
+                    {% for order in orders %}
+                    <tr class="border-t border-gray-300 hover:bg-gray-200 transition">
+                        <td class="px-6 py-3 font-semibold">{{ order.id }}</td>
+                        <td class="px-6 py-3">{{ order.user.username }}</td>
+                        <td class="px-6 py-3">{{ order.portrait.title }}</td>
+                        <td class="px-6 py-3">{{ order.status }}</td>
+                        <td class="px-6 py-3 text-center">
+                            <form action="{% url 'update' order.id %}" method="post" class="flex justify-center">
+                                {% csrf_token %}
+                                <select name="status" class="border border-gray-300 px-2 py-1 rounded-md">
+                                    {% for key, value in order.STATUS_CHOICES %}
+                                    <option value="{{ key }}" {% if order.status == key %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="ml-2 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-3 text-center text-gray-500">No orders found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #0a0101;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.form-container {
+    position: relative;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+}
+
+form h2 {
+    text-align: center;
+    color: #ebe5e5;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #a9a6a6;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #3b0b0b;
+    border-radius: 5px;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: rgb(21, 4, 4);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #3e6340;
+}
+
+#login:checked ~ .form #loginForm,
+#register:checked ~ .form #registrationForm {
+    display: flex;
+}
+
+.toggle {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.toggle label {
+    cursor: pointer;
+    color: #61ab64;
+    font-weight: bold;
+}
+
+    

@@ -1,0 +1,322 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo 3D Preview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #logo-container {
+            width: 80vw;
+            height: 80vh;
+            border: 1px solid #ddd;
+            background-color: white;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div id="logo-container"></div>
+
+<script>
+    // Setup the scene, camera, and renderer
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('logo-container').appendChild(renderer.domElement);
+
+    // Load the logo image
+    var logoTextureUrl = "{{ logo_data }}";  // The logo image URL passed from backend
+
+    // Create a plane geometry and apply the logo image as a texture
+    var geometry = new THREE.PlaneGeometry(5, 5);
+    var material = new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(logoTextureUrl),  // Loading the image from URL
+        side: THREE.DoubleSide,
+        transparent: true,
+    });
+    var logoMesh = new THREE.Mesh(geometry, material);
+
+    // Add the logo mesh to the scene
+    scene.add(logoMesh);
+
+    // Set up the camera position
+    camera.position.z = 10;
+
+    // Animation loop to continuously rotate the logo for the 3D effect
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Rotate the logo on its axes for a 3D effect
+        logoMesh.rotation.x += 0.01;
+        logoMesh.rotation.y += 0.01;
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize the canvas when the window size changes
+    window.addEventListener('resize', function () {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+</script>
+
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo 3D Preview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar Style */
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a,
+        .navbar button {
+            color: white;
+            background-color: #4A90E2;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover,
+        .navbar button:hover {
+            background-color: #357ABD;
+        }
+
+        /* Card Style */
+        .card {
+            width: 80vw;
+            height: 80vh;
+            max-width: 900px;
+            max-height: 600px;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-top: 80px; /* Push below navbar */
+        }
+
+        /* Logo Container Style */
+        #logo-container {
+            width: 100%;
+            height: 100%;
+            background-color: #eaeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Zoom Buttons Style */
+        .zoom-button {
+            margin-top: 10px;
+            padding: 0.5rem 1rem;
+            background-color: #FF6347;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .zoom-button:hover {
+            background-color: #e55b4c;
+        }
+
+        .zoom-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <button onclick="history.back()">← Back</button>
+        <h1>Logo 3D Preview</h1>
+        <a href="/home/">Home</a>
+    </div>
+
+    <!-- 3D Preview Section -->
+    <div class="card">
+        <div id="logo-container"></div>
+    </div>
+
+    <!-- Zoom Controls -->
+    <div class="zoom-container">
+        <button class="zoom-button" id="zoom-in-btn">+</button>
+        <button class="zoom-button" id="zoom-out-btn">−</button>
+    </div>
+
+    <script>
+        // Setup the scene, camera, and renderer
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('logo-container').appendChild(renderer.domElement);
+
+        // Load the logo image (passed from Django as {{ logo_data }})
+        var logoTextureUrl = "{{ logo_data }}";  // The logo image URL passed from backend
+
+        // Create a plane geometry and apply the logo image as a texture
+        var geometry = new THREE.PlaneGeometry(5, 5); // Aspect ratio of the logo
+        var material = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load(logoTextureUrl),
+            side: THREE.DoubleSide,
+            transparent: true,
+        });
+        var logoMesh = new THREE.Mesh(geometry, material);
+
+        // Add the logo mesh to the scene
+        scene.add(logoMesh);
+
+        // Set up the camera position
+        camera.position.z = 10;
+
+        // Variables to track mouse movement and dragging
+        var isDragging = false;
+        var previousMouseX = 0;
+        var previousMouseY = 0;
+        var rotationX = 0;
+        var rotationY = 0;
+
+        // Capture mouse events inside the canvas
+        var logoContainer = document.getElementById('logo-container');
+
+        // Mouse down event to start dragging
+        logoContainer.addEventListener('mousedown', function (event) {
+            isDragging = true;
+            previousMouseX = event.clientX;
+            previousMouseY = event.clientY;
+            logoContainer.style.cursor = 'grabbing'; // Change cursor to grabbing
+        });
+
+        // Mouse move event to rotate logo when dragging
+        logoContainer.addEventListener('mousemove', function (event) {
+            if (isDragging) {
+                var deltaX = event.clientX - previousMouseX;
+                var deltaY = event.clientY - previousMouseY;
+
+                // Update rotation based on mouse drag
+                rotationX += deltaY * 0.01;
+                rotationY += deltaX * 0.01;
+
+                // Apply rotation to the logo
+                logoMesh.rotation.x = rotationX;
+                logoMesh.rotation.y = rotationY;
+
+                previousMouseX = event.clientX;
+                previousMouseY = event.clientY;
+            }
+        });
+
+        // Mouse up event to stop dragging
+        logoContainer.addEventListener('mouseup', function () {
+            isDragging = false;
+            logoContainer.style.cursor = 'grab'; // Reset cursor to grab
+        });
+
+        // Mouse leave event to stop dragging if mouse leaves the container
+        logoContainer.addEventListener('mouseleave', function () {
+            isDragging = false;
+            logoContainer.style.cursor = 'grab'; // Reset cursor to grab
+        });
+
+        // Function to animate the scene
+        function animate() {
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Resize the canvas when the window size changes
+        window.addEventListener('resize', function () {
+            var card = document.querySelector('.card');
+            var cardAspect = card.offsetWidth / card.offsetHeight;
+
+            renderer.setSize(card.offsetWidth, card.offsetHeight);
+            camera.aspect = cardAspect;
+            camera.updateProjectionMatrix();
+        });
+
+        // Escape button functionality to go back to home
+        window.addEventListener('keydown', function (event) {
+            if (event.key === "Escape") {
+                // Redirect to the homepage or any URL you specify
+                window.location.href = '/'; // Change this to the desired URL
+            }
+        });
+
+        // Zoom-in functionality
+        document.getElementById('zoom-in-btn').addEventListener('click', function () {
+            if (camera.position.z > 2) {
+                camera.position.z -= 1; // Move camera closer to the logo
+            }
+        });
+
+        // Zoom-out functionality
+        document.getElementById('zoom-out-btn').addEventListener('click', function () {
+            camera.position.z += 1; // Move camera further away from the logo
+        });
+    </script>
+
+</body>
+
+</html>

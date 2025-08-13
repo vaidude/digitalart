@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with {{ receiver.username }}</title>
+    <style>
+        /* Gradient Background */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(to right, #fe4fbb, #00f2fe); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+        }
+
+        /* Chat Container */
+        .chat-container { 
+            max-width: 600px; 
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Chat Header */
+        .chat-header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+            color: white;
+        }
+
+        /* Messages Box */
+        .messages { 
+            border: 1px solid rgba(255, 255, 255, 0.4); 
+            padding: 15px; 
+            height: 400px; 
+            overflow-y: auto; 
+            margin-bottom: 15px; 
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Message Bubble */
+        .message { 
+            padding: 5px 20px; 
+            border-radius: 50px; 
+            max-width: 60%; 
+            word-wrap: break-word; 
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s ease-in-out;
+        }
+
+        /* Sent Message */
+        .sent { 
+            background: #7994de; 
+            align-self: flex-end; 
+            text-align: right; 
+            margin-left: auto;
+            color: black;
+        }
+
+        /* Received Message */
+        .received { 
+            background: #ffabab; 
+            align-self: flex-start; 
+            text-align: left; 
+            margin-right: auto;
+            color: black;
+        }
+
+        /* Media Styling */
+        .media { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 10px; 
+            margin-top: 10px; 
+        }
+
+        video { 
+            max-width: 100%; 
+            height: auto; 
+            margin-top: 10px; 
+            border-radius: 10px; 
+        }
+
+        /* Chat Form */
+        .chat-form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px;
+        }
+
+        .chat-form textarea { 
+            flex: 1; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 10px; 
+            resize: none; 
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: inset 0px 4px 6px rgba(0,0,0,0.1);
+            outline: none;
+        }
+
+        /* File Input */
+        .chat-form input[type="file"] { 
+            width: 100%; 
+            padding: 8px; 
+            border-radius: 10px; 
+            background: rgba(255, 255, 255, 0.5);
+            color: black;
+            cursor: pointer;
+        }
+
+        /* Send Button */
+        .chat-form button { 
+            padding: 12px; 
+            background: #591447; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .chat-form button:hover { 
+            background: #3f011e; 
+        }
+
+        /* Small Timestamp */
+        .message small { 
+            font-size: 0.8rem; 
+            color: rgba(0, 0, 0, 0.6); 
+            margin-top: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat with {{ receiver.username }}</h2>
+        </div>
+        <div class="messages" id="messages">
+            {% for message in messages %}
+                <div class="message {% if message.sender == sender.username %}sent{% else %}received{% endif %}">
+                    <p>{{ message.content }}</p>
+                    <small>{{ message.timestamp }}</small>
+
+                    {% if message.media %}
+                        {% if message.media_type == 'image' %}
+                            <img src="{{ message.media.url }}" class="media" alt="Image">
+                        {% elif message.media_type == 'video' %}
+                            <video controls>
+                                <source src="{{ message.media.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% else %}
+                            <p>Unsupported media type</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <form class="chat-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <textarea name="content" placeholder="Type a message..." rows="2"></textarea>
+            <input type="file" name="media" accept="image/*,video/*">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</body>
+</html>
